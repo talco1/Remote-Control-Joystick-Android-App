@@ -7,5 +7,9 @@ import androidx.lifecycle.ViewModel
 import com.example.remotecontroljoystick.model.Model
 
 class MainViewModel : ViewModel() {
-    val ipAddress = MutableLiveData<String>()
+    val ipAddress: LiveData<String>
+        get() = Model.ipAddress
+    val port: LiveData<String>
+        get() = Model.port
+    fun connectFlightGear() = Model.connect()
 }

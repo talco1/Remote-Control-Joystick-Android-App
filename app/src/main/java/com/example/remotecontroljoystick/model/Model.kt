@@ -11,21 +11,6 @@ object Model {
     var dispatchQueue: BlockingQueue<Runnable> = LinkedBlockingQueue<Runnable>()
 
     fun connect(ip: String, port: Int) {
-        //original thread - works
-        /*
-        Thread(Runnable {
-            val fg = Socket(ip, port)
-            out = PrintWriter(fg.getOutputStream(),true)
-            while(true) {
-                out.print("set /controls/flight/rudder -1 \r\n")
-                out.flush()
-                out.print("set /controls/flight/rudder 1 \r\n")
-                out.flush()
-            }
-        }).start()
-         */
-        //active object
-/*
         Thread(Runnable {
             val fg = Socket(ip, port)
             out = PrintWriter(fg.getOutputStream(),true)
@@ -37,62 +22,11 @@ object Model {
                 }
             }
         }).start()
-
- */
-        //thread pool
-        var executor = Executors.newSingleThreadExecutor();
-        try {
-            executor.submit(Runnable {
-                val fg = Socket(ip, port)
-                out = PrintWriter(fg.getOutputStream())
-                val i=0
-                while(true) {
-                    out.print("set /controls/flight/rudder -1 \r\n")
-                    out.flush()
-                    out.print("set /controls/flight/rudder 1 \r\n")
-                    out.flush()
-                }
-            })
-        } catch (e: InterruptedException) { }
     }
 
     fun rudderChanged() {
         dispatchQueue.put(Runnable {
-            out.print("set /controls/flight/rudder -1 \r\n")
-            out.flush()
-            out.print("set /controls/flight/rudder 1 \r\n")
-            out.flush()
-            out.print("set /controls/flight/aileron -1 \r\n")
-            out.flush()
-            out.print("set /controls/flight/aileron 1 \r\n")
-            out.flush()
-            out.print("set /controls/flight/elevator -1 \r\n")
-            out.flush()
-            out.print("set /controls/flight/elevator 1 \r\n")
-            out.flush()
-            out.print("set /controls/engines/current-engine/throttle 0 \r\n")
-            out.flush()
-            out.print("set /controls/engines/current-engine/throttle 1 \r\n")
-            out.flush()
+            //todo: add implementation
         })
     }
 }
-
-/*
-                out.print("set /controls/flight/rudder -1 \r\n")
-                out.flush()
-                out.print("set /controls/flight/rudder 1 \r\n")
-                out.flush()
-                out.print("set /controls/flight/aileron -1 \r\n")
-                out.flush()
-                out.print("set /controls/flight/aileron 1 \r\n")
-                out.flush()
-                out.print("set /controls/flight/elevator -1 \r\n")
-                out.flush()
-                out.print("set /controls/flight/elevator 1 \r\n")
-                out.flush()
-                out.print("set /controls/engines/current-engine/throttle 0 \r\n")
-                out.flush()
-                out.print("set /controls/engines/current-engine/throttle 1 \r\n")
-                out.flush()
- */

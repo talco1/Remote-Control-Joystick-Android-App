@@ -22,5 +22,4 @@ class MainViewModel : ViewModel(), Observable {
 
     fun connectFlightGear() = Model.connect(ipAddress.value.toString(), (port.value.toString()).toInt())
 
-    fun rudder() = Model.rudderChanged()
 }

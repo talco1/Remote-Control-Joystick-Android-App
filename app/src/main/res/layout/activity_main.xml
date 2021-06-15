@@ -53,19 +53,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/PortText" />
 
-        <Button
-            android:id="@+id/button1"
-            android:layout_width="211dp"
-            android:layout_height="54dp"
-            android:layout_marginTop="136dp"
-            android:onClick="@{() -> viewmodel.rudder()}"
-            android:text="rudder"
-            android:textAllCaps="false"
-            android:textSize="20dp"
-            app:backgroundTint="#4CAF50"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/PortText" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

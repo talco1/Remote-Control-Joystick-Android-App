@@ -61,14 +61,38 @@ class JoystickActivity : AppCompatActivity() {
                     yJoystick = event.y
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    val moveX: Float
-                    val moveY: Float
-                    moveX = event.x
-                    moveY = event.y
-                    val distanceX: Float = moveX - xJoystick
-                    val distanceY: Float = moveY - yJoystick
-                    imageView.setX(imageView.getX() + distanceX)
-                    imageView.setY(imageView.getY() + distanceY)
+                    val newY = imageView.y + (event.y - yJoystick)
+                    val newX = imageView.x + (event.x - xJoystick)
+                    val xRange = rudder.width - throttle.height
+                    val yRange = throttle.width
+                    //keep within boundaries
+                    if (((newX+imageView.width) <= (rudder.x + rudder.width)) && ((newY+imageView.height) <= rudder.y)
+                        && (newX >= (rudder.x + throttle.height)) && newY >= (rudder.y - throttle.width)) {
+                        imageView.x = newX
+                        imageView.y = newY
+                        val aileron = (imageView.x/xRange)*2-2
+                        println("aileron: "+aileron)
+                        println("original ail: "+imageView.x)
+                        println("x range: $xRange")
+                        viewModel.setAileron(aileron.toDouble())
+                        var elevator = (imageView.y/yRange)*2-2
+                        viewModel.setElevator(elevator.toDouble())
+                        println("elevator: "+elevator)
+                        println("original ele: "+imageView.y)
+                        println("y range: $yRange")
+
+
+                        //rangeX: from (rudder.x + throttle.height) to (rudder.x + rudder.width)
+                        // rudder.x + throttle.height = -1
+                        // rudder.x + rudder.width = 1
+                        // aileron(-1..1): x length = rudder.width - throttle.height
+
+
+                        //rangeY: from (rudder.y - throttle.width) to (rudder.y)
+                        // -1 = rudder.y - throttle.width
+                        // 1 = rudder.y
+                        //elevator (-1..1): y length = throttle.width
+                    }
                 }
             }
             true

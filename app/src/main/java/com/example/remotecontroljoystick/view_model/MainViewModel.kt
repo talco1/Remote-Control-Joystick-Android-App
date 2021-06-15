@@ -37,6 +37,13 @@ class MainViewModel : ViewModel(), Observable {
         Model.throttleChanged(throttle)
     }
 
+    fun setAileron(aileron: Double) {
+        Model.aileronChanged(aileron)
+    }
+    fun setElevator(elevator: Double) {
+        Model.elevatorChanged(elevator)
+    }
+
 }
 
 

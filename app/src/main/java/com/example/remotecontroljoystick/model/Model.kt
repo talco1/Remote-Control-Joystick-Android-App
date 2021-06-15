@@ -36,4 +36,16 @@ object Model {
             out.flush()
         })
     }
+    fun aileronChanged(aileron: Double) {
+        dispatchQueue.put(Runnable {
+            out.print("set /controls/flight/aileron $aileron \r\n")
+            out.flush()
+        })
+    }
+    fun elevatorChanged(elevator: Double) {
+        dispatchQueue.put(Runnable {
+            out.print("set /controls/flight/elevator $elevator \r\n")
+            out.flush()
+        })
+    }
 }

@@ -20,7 +20,14 @@ class MainViewModel : ViewModel(), Observable {
     override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {
     }
 
-    fun connectFlightGear() = Model.connect(ipAddress.value.toString(), (port.value.toString()).toInt())
+    fun connectFlightGear(): Boolean {
+        if(ipAddress.value != null && port.value != null){
+            Model.connect(ipAddress.value.toString(), (port.value.toString()).toInt())
+            return true
+        }
+        return false
+
+    }
 
     // seekbars
     fun setRudder(rudder: Double) {

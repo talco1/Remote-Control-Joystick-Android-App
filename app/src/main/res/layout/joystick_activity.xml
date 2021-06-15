@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".views.MainActivity">
+
+        <SeekBar
+            android:id="@+id/rudderSeekBar"
+            android:layout_width="388dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.478"
+            app:layout_constraintStart_toStartOf="parent"
+            android:min="-100"
+            android:max="100"
+            />
+
+        <SeekBar
+            android:id="@+id/throttleSeekBar"
+            android:layout_width="388dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="240dp"
+            android:layout_marginRight="350dp"
+            android:rotation="270"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.478"
+            app:layout_constraintStart_toStartOf="parent"
+            android:min="0"
+            android:max="100"
+            />
+
+        <ImageView
+            android:id="@+id/joystickImage"
+            android:layout_width="215dp"
+            android:layout_height="215dp"
+            app:layout_constraintBottom_toBottomOf="@+id/rudderSeekBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.51"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button"
+            app:layout_constraintVertical_bias="0.675"
+            app:srcCompat="@drawable/joystick" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

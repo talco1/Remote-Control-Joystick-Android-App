@@ -22,4 +22,14 @@ class MainViewModel : ViewModel(), Observable {
 
     fun connectFlightGear() = Model.connect(ipAddress.value.toString(), (port.value.toString()).toInt())
 
+    // seekbars
+    fun setRudder(rudder: Double) {
+        Model.rudderChanged(rudder)
+    }
+    fun setThrottle(throttle: Double) {
+        Model.throttleChanged(throttle)
+    }
+
 }
+
+

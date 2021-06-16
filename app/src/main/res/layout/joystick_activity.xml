@@ -8,11 +8,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/clouds">
+        android:background="@drawable/joystickBackground">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="630dp"
+        android:layout_height="600dp"
         tools:context=".views.MainActivity">
 
         <SeekBar
@@ -20,6 +20,8 @@
             android:layout_width="388dp"
             android:layout_height="40dp"
             android:layout_marginBottom="32dp"
+            android:progressDrawable="@drawable/seekbar_progress"
+            android:thumb="@drawable/seekbar_thumb"
             android:max="100"
             android:min="-100"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -29,10 +31,12 @@
 
         <SeekBar
             android:id="@+id/throttleSeekBar"
-            android:layout_width="388dp"
+            android:layout_width="450dp"
             android:layout_height="40dp"
             android:layout_marginRight="350dp"
-            android:layout_marginBottom="240dp"
+            android:layout_marginBottom="280dp"
+            android:progressDrawable="@drawable/seekbar_progress"
+            android:thumb="@drawable/seekbar_thumb"
             android:max="100"
             android:min="0"
             android:rotation="270"
@@ -45,7 +49,7 @@
             android:id="@+id/joystickImage"
             android:layout_width="162dp"
             android:layout_height="162dp"
-            android:layout_marginBottom="104dp"
+            android:layout_marginBottom="150dp"
             app:layout_constraintBottom_toBottomOf="@+id/rudderSeekBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"

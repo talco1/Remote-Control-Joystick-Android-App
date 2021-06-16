@@ -24,9 +24,28 @@ object Model {
         }).start()
     }
 
-    fun rudderChanged() {
+    fun rudderChanged(rudder: Double) {
         dispatchQueue.put(Runnable {
-            //todo: add implementation
+            out.print("set /controls/flight/rudder $rudder \r\n")
+            out.flush()
+        })
+    }
+    fun throttleChanged(throttle: Double) {
+        dispatchQueue.put(Runnable {
+            out.print("set /controls/engines/current-engine/throttle $throttle \r\n")
+            out.flush()
+        })
+    }
+    fun aileronChanged(aileron: Double) {
+        dispatchQueue.put(Runnable {
+            out.print("set /controls/flight/aileron $aileron \r\n")
+            out.flush()
+        })
+    }
+    fun elevatorChanged(elevator: Double) {
+        dispatchQueue.put(Runnable {
+            out.print("set /controls/flight/elevator $elevator \r\n")
+            out.flush()
         })
     }
 }

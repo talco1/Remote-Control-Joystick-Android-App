@@ -1,9 +1,12 @@
 package com.example.remotecontroljoystick.views
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewTreeObserver
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
@@ -54,6 +57,16 @@ class JoystickActivity : AppCompatActivity() {
         })
 
         val imageView = findViewById<ImageView>(R.id.joystickImage)
+
+        var rx=0F
+        var ry=0F
+        val observer: ViewTreeObserver = imageView.viewTreeObserver
+        observer.addOnGlobalLayoutListener { rx= (rudder.width-throttle.height-imageView.width).toFloat()
+            ry= (throttle.width-imageView.height).toFloat()
+            imageView.x=(rudder.x+throttle.height)+rx/2
+            imageView.y=(rudder.y-throttle.width)+ry/2
+        }
+
         imageView.setOnTouchListener(View.OnTouchListener { v, event ->
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
@@ -63,35 +76,18 @@ class JoystickActivity : AppCompatActivity() {
                 MotionEvent.ACTION_MOVE -> {
                     val newY = imageView.y + (event.y - yJoystick)
                     val newX = imageView.x + (event.x - xJoystick)
-                    val xRange = rudder.width - throttle.height
-                    val yRange = throttle.width
+                    val startXRange = rudder.x + throttle.height
+                    val startYRange = rudder.y - throttle.width
+                    val endXRange = rudder.x + rudder.width - imageView.width
+                    val endYRange = rudder.y - imageView.height
                     //keep within boundaries
-                    if (((newX+imageView.width) <= (rudder.x + rudder.width)) && ((newY+imageView.height) <= rudder.y)
-                        && (newX >= (rudder.x + throttle.height)) && newY >= (rudder.y - throttle.width)) {
+                    if ((newX in startXRange..endXRange) && (newY in startYRange..endYRange)) {
                         imageView.x = newX
                         imageView.y = newY
-                        val aileron = (imageView.x/xRange)*2-2
-                        println("aileron: "+aileron)
-                        println("original ail: "+imageView.x)
-                        println("x range: $xRange")
+                        val aileron = ((imageView.x - startXRange)/(endXRange-startXRange))*2-1
                         viewModel.setAileron(aileron.toDouble())
-                        var elevator = (imageView.y/yRange)*2-2
+                        var elevator = ((imageView.y - startYRange)/(endYRange-startYRange))*2-1
                         viewModel.setElevator(elevator.toDouble())
-                        println("elevator: "+elevator)
-                        println("original ele: "+imageView.y)
-                        println("y range: $yRange")
-
-
-                        //rangeX: from (rudder.x + throttle.height) to (rudder.x + rudder.width)
-                        // rudder.x + throttle.height = -1
-                        // rudder.x + rudder.width = 1
-                        // aileron(-1..1): x length = rudder.width - throttle.height
-
-
-                        //rangeY: from (rudder.y - throttle.width) to (rudder.y)
-                        // -1 = rudder.y - throttle.width
-                        // 1 = rudder.y
-                        //elevator (-1..1): y length = throttle.width
                     }
                 }
             }

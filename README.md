@@ -11,5 +11,5 @@ using a joystick and two seek bars that set the aileron, elevator, rudder and th
 
 ## Links
 
-[uml diagram]()<br/>
-[a short video displaying the mvvm architecture and the demo]()<br/>
+[uml diagram](https://github.com/talco1/Remote-Control-Joystick-Android-App/blob/main/class_diagram.PNG)<br/>
+[a short video displaying the mvvm architecture and the demo](https://streamable.com/2bd88m)<br/>

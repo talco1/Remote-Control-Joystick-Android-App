@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
@@ -12,9 +13,12 @@ import com.example.remotecontroljoystick.R
 import com.example.remotecontroljoystick.view_model.MainViewModel
 
 class JoystickActivity : AppCompatActivity() {
+
     private lateinit var viewModel: MainViewModel
-    var xJoystick=0.0f
-    var yJoystick=0.0f
+    //save last location of the joystick
+    private var xJoystick=0.0f
+    private var yJoystick=0.0f
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +27,7 @@ class JoystickActivity : AppCompatActivity() {
         viewModel = ViewModelProviders.of(this)
             .get(MainViewModel::class.java)
 
-        //seek bars
+        //set a new rudder value when the rudder's seekbar progress changes
         var rudder = findViewById<SeekBar>(R.id.rudderSeekBar)
         rudder.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -38,6 +42,8 @@ class JoystickActivity : AppCompatActivity() {
                 //empty
             }
         })
+
+        //set a new throttle value when the throttle's seekbar progress changes
         var throttle = findViewById<SeekBar>(R.id.throttleSeekBar)
         throttle.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -53,45 +59,45 @@ class JoystickActivity : AppCompatActivity() {
             }
         })
 
-        val imageView = findViewById<ImageView>(R.id.joystickImage)
-        imageView.setOnTouchListener(View.OnTouchListener { v, event ->
+        val joystick = findViewById<ImageView>(R.id.joystickImage)
+        //save the joystick's motion range
+        var xRange=0F
+        var yRange=0F
+        //set the joystick initial location in the middle of its range
+        val observer: ViewTreeObserver = joystick.viewTreeObserver
+        observer.addOnGlobalLayoutListener { xRange= (rudder.width-throttle.height-joystick.width).toFloat()
+            yRange= (throttle.width-joystick.height).toFloat()
+            joystick.x=(rudder.x+throttle.height)+xRange/2
+            joystick.y=(rudder.y-throttle.width)+yRange/2
+        }
+
+        //when moved, change the joystick's location and update the aileron and elevator values
+        joystick.setOnTouchListener(View.OnTouchListener { v, event ->
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
+                    //save the joystick's previous location
                     xJoystick = event.x
                     yJoystick = event.y
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    val newY = imageView.y + (event.y - yJoystick)
-                    val newX = imageView.x + (event.x - xJoystick)
-                    val xRange = rudder.width - throttle.height
-                    val yRange = throttle.width
-                    //keep within boundaries
-                    if (((newX+imageView.width) <= (rudder.x + rudder.width)) && ((newY+imageView.height) <= rudder.y)
-                        && (newX >= (rudder.x + throttle.height)) && newY >= (rudder.y - throttle.width)) {
-                        imageView.x = newX
-                        imageView.y = newY
-                        val aileron = (imageView.x/xRange)*2-2
-                        println("aileron: "+aileron)
-                        println("original ail: "+imageView.x)
-                        println("x range: $xRange")
+                    //calculate the new location
+                    val newY = joystick.y + (event.y - yJoystick)
+                    val newX = joystick.x + (event.x - xJoystick)
+                    //range variables
+                    val startXRange = rudder.x + throttle.height
+                    val startYRange = rudder.y - throttle.width
+                    val endXRange = rudder.x + rudder.width - joystick.width
+                    val endYRange = rudder.y - joystick.height
+                    //if the new location is within the motion range
+                    if ((newX in startXRange..endXRange) && (newY in startYRange..endYRange)) {
+                        //set the joystick to the new location
+                        joystick.x = newX
+                        joystick.y = newY
+                        //update the aileron and elevator values according to their range [-1...1]
+                        val aileron = ((joystick.x - startXRange)/(endXRange-startXRange))*2-1
                         viewModel.setAileron(aileron.toDouble())
-                        var elevator = (imageView.y/yRange)*2-2
+                        var elevator = ((joystick.y - startYRange)/(endYRange-startYRange))*2-1
                         viewModel.setElevator(elevator.toDouble())
-                        println("elevator: "+elevator)
-                        println("original ele: "+imageView.y)
-                        println("y range: $yRange")
-
-
-                        //rangeX: from (rudder.x + throttle.height) to (rudder.x + rudder.width)
-                        // rudder.x + throttle.height = -1
-                        // rudder.x + rudder.width = 1
-                        // aileron(-1..1): x length = rudder.width - throttle.height
-
-
-                        //rangeY: from (rudder.y - throttle.width) to (rudder.y)
-                        // -1 = rudder.y - throttle.width
-                        // 1 = rudder.y
-                        //elevator (-1..1): y length = throttle.width
                     }
                 }
             }
